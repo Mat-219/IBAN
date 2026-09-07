@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "BankAccountApi.Controllersnode.AccountsController",
+    "Method": "CreateAccount",
+    "RelativePath": "api/Accounts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "BankAccountApi.DataFromUser.CreateBankAccountRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
