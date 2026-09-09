@@ -4,6 +4,7 @@ using BankAccountApi.DataFromUser;
 using BankAccountApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BankAccountApi.Validation;
 
 namespace BankAccountApi.Controllersnode
 {
@@ -21,6 +22,11 @@ namespace BankAccountApi.Controllersnode
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody] CreateBankAccountRequest request)
         {
+            if (!IBANvalidator.IsValid(request.AccountNumber))
+            {
+                return BadRequest(new { message = "Nieprawidłowy numer konta (IBAN)" });
+            }
+
             bool exists = await _context.BankAccounts
                 .AnyAsync(a => a.AccountNumber == request.AccountNumber);
 
@@ -38,7 +44,15 @@ namespace BankAccountApi.Controllersnode
             };
 
             _context.BankAccounts.Add(account);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest(new { message = "Konto o tym numerze już istnieje." });
+            }
 
             return Ok(account);
         }
